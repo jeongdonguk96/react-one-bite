@@ -1,3 +1,4 @@
+import { memo } from "react";
 import "../css/TodoItem.css";
 
 const TodoItem = ({ id, checked, content, date, update, deleteTodo }) => {
@@ -19,4 +20,4 @@ const TodoItem = ({ id, checked, content, date, update, deleteTodo }) => {
   );
 };
 
-export default TodoItem;
+export default memo(TodoItem);
