@@ -2,7 +2,14 @@ import Header from "./components/Header";
 import Editor from "./components/Editor";
 import List from "./components/List";
 import "./App.css";
-import { useState, useRef, useReducer, useCallback } from "react";
+import {
+  useState,
+  useRef,
+  useReducer,
+  useCallback,
+  createContext,
+  useMemo,
+} from "react";
 
 const mockData = [
   {
@@ -38,6 +45,9 @@ const reducer = (state, action) => {
   }
 };
 
+export const TodoStateContext = createContext();
+export const TodoDispatchContext = createContext();
+
 function App() {
   const [todos, dispatch] = useReducer(reducer, mockData);
   const idRef = useRef(4);
@@ -68,12 +78,20 @@ function App() {
     });
   }, []);
 
+  const memoizedDispatch = useMemo(() => {
+    return { create, update, deleteTodo };
+  }, []);
+
   return (
     <>
       <div className="App">
         <Header />
-        <Editor create={create} />
-        <List todos={todos} update={update} deleteTodo={deleteTodo} />
+        <TodoStateContext.Provider value={todos}>
+          <TodoDispatchContext.Provider value={memoizedDispatch}>
+            <Editor />
+            <List />
+          </TodoDispatchContext.Provider>
+        </TodoStateContext.Provider>
       </div>
     </>
   );
